@@ -13,22 +13,25 @@ export class UsersRepository implements IUsersRepository {
 
   async findUserWithGamesById({
     user_id,
-  }: IFindUserWithGamesDTO): Promise<User> {
-    const user = await this.repository.query(
-      `SELECT "users"."id" AS "users_id", 
-      "users"."first_name" AS "users_first_name", 
-      "users"."last_name" AS "users_last_name", 
-      "users"."email" AS "users_email", 
-      "users"."created_at" AS "users_created_at", 
-      "users"."updated_at" AS "users_updated_at", 
-      "games"."id" AS "games_id", 
-      "games"."title" AS "games_title", 
-      "games"."created_at" AS "games_created_at", 
-      "games"."updated_at" AS "games_updated_at" FROM "users" "users" 
-      INNER JOIN "users_games_games" "users_games" ON "users_games"."usersId"="users"."id" 
-      INNER JOIN "games" "games" ON "games"."id"="users_games"."gamesId" 
-      WHERE "users"."id" = "${user_id}"`);
-  console.log(user);
+  }: IFindUserWithGamesDTO): Promise<any> {
+    // const user = await this.repository.query(
+    //   `SELECT "users"."id" AS "users_id", 
+    //   "users"."first_name" AS "users_first_name",
+    //   "users"."last_name" AS "users_last_name", 
+    //   "users"."email" AS "users_email", 
+    //   "users"."created_at" AS "users_created_at", 
+    //   "users"."updated_at" AS "users_updated_at", 
+    //   "games"."id" AS "games_id", 
+    //   "games"."title" AS "games_title", 
+    //   "games"."created_at" AS "games_created_at", 
+    //   "games"."updated_at" AS "games_updated_at" FROM "users" 
+    //   "users" INNER JOIN "users_games_games" "users_games" ON "users_games"."usersId"="users"."id" 
+    //   INNER JOIN "games" "games" ON "games"."id"="users_games"."gamesId" 
+    //   WHERE "users"."id" = '${user_id}'`);
+    //   const user_return = user
+    const user = await this.repository.createQueryBuilder('users')
+    .leftJoinAndSelect('users.games', 'games')
+    .where('users.id = :id', { id: user_id }).getOneOrFail();
     return user;
   }
 
