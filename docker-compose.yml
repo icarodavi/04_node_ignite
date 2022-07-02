@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  database:
+    #ESSE É O NOME DO SERVICE QUE DEVE ESTAR NO ARQUIVO DE CRIAÇÃO DE CONEXÃO
+    image: postgres
+    container_name: pgsql_desafio
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=queries_challenge
+    volumes:
+      - pgdata:/data/postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - 5051:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: icarodavi@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: 123456
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+  # app:
+  #   build: .
+  #   container_name: desafio
+  #   restart: always
+  #   ports:
+  #     - 3333:3333
+  #     - 9229:9229 #Você pode inserir essa porta tbm pra poder usar o debug
+  #   volumes:
+  #     - .:/usr/app
+  #   links:
+  #     - database
+  #   depends_on:
+  #     - database
+
+
+
+volumes:
+  pgdata:
+    driver: local
